@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Echo Shield</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 text-white min-h-screen">
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <header class="text-center mb-10">
+      <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-pink-400">
+        🛡️ Echo Shield
+      </h1>
+      <p class="text-sm text-gray-300 mt-2">Secure Messaging Platform with RSA, Diffie-Hellman & AES Encryption</p>
+    </header>
+
+    <!-- Nav Tabs -->
+    <div class="flex justify-center space-x-4 mb-8">
+      <button class="tab-button px-6 py-2 rounded-lg bg-white text-black font-medium shadow-md" onclick="switchTab('messaging')">💬 Messaging</button>
+      <button class="tab-button px-6 py-2 rounded-lg bg-gray-800 text-white" onclick="switchTab('keys')">🔑 Key Management</button>
+      <button class="tab-button px-6 py-2 rounded-lg bg-gray-800 text-white" onclick="switchTab('methods')">🛡️ Encryption Methods</button>
+    </div>
+
+    <!-- Messaging -->
+    <div id="messaging" class="tab-content block">
+      <div class="bg-purple-800/20 p-6 rounded-xl border border-purple-500">
+        <h2 class="text-xl font-semibold mb-4">Secure Messaging</h2>
+        <div id="chatContainer" class="h-64 overflow-y-auto bg-gray-900/50 rounded-lg p-4 text-gray-200 mb-4 border border-purple-300">
+          <p class="text-center text-gray-500">No messages yet. Send your first encrypted message!</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <select id="encryptionMethod" class="bg-gray-800 text-white rounded-md px-4 py-2 border border-gray-600">
+            <option value="rsa">RSA</option>
+            <option value="aes">AES</option>
+            <option value="dh">Diffie-Hellman</option>
+          </select>
+          <input id="messageInput" type="text" placeholder="Type your message..." class="flex-1 bg-gray-800 text-white px-4 py-2 rounded-md border border-gray-600" />
+          <button id="sendButton" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
+            ✈️
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Management -->
+    <div id="keys" class="tab-content hidden">
+      <div class="bg-purple-800/20 p-6 rounded-xl border border-purple-500">
+        <h2 class="text-xl font-semibold mb-4">Cryptographic Key Management</h2>
+        <div class="space-y-6">
+
+          <div class="bg-gray-900 p-4 rounded-lg">
+            <div class="flex justify-between items-center mb-2">
+              <h3 class="text-lg font-bold text-blue-300">🔐 RSA Key Pair</h3>
+              <button onclick="generateKeys()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">🔄 Generate</button>
+            </div>
+            <p class="text-xs text-gray-400 mb-1">Asymmetric encryption keys</p>
+            <pre id="rsaPublic" class="text-xs text-green-400 whitespace-pre-wrap break-words overflow-auto max-h-40 bg-gray-800 p-2 rounded-md mb-1">Public Key: Not generated yet</pre>
+            <pre id="rsaPrivate" class="text-xs text-yellow-400 whitespace-pre-wrap break-words overflow-auto max-h-40 bg-gray-800 p-2 rounded-md">Private Key: Not generated yet</pre>
+          </div>
+
+          <div class="bg-gray-900 p-4 rounded-lg">
+            <h3 class="text-lg font-bold text-purple-300 mb-1">⚡ AES Key</h3>
+            <p class="text-xs text-gray-400 mb-1">Symmetric key for fast encryption</p>
+            <pre id="aesKey" class="text-xs text-pink-300 bg-gray-800 p-2 rounded-md">Key: Not generated yet</pre>
+          </div>
+
+          <div class="bg-gray-900 p-4 rounded-lg">
+            <h3 class="text-lg font-bold text-indigo-300 mb-1">🤝 Diffie-Hellman Key Exchange</h3>
+            <p class="text-xs text-gray-400 mb-1">Secure shared secret over public network</p>
+            <pre id="dhPublic" class="text-xs text-green-300 bg-gray-800 p-2 rounded-md mb-1">Public Key: Not generated yet</pre>
+            <pre id="dhPrivate" class="text-xs text-yellow-300 bg-gray-800 p-2 rounded-md mb-1">Private Key: Not generated yet</pre>
+            <pre id="dhShared" class="text-xs text-blue-300 bg-gray-800 p-2 rounded-md">Shared Secret: Not generated yet</pre>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div id="keys" class="tab-content hidden">
+      <div class="bg-purple-800/20 p-6 rounded-xl border border-purple-500">
+        <h2 class="text-xl font-semibold mb-4">Cryptographic Key Management</h2>
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-medium">RSA Key Pair</h3>
+              <p class="text-sm text-gray-400">Asymmetric encryption keys</p>
+            </div>
+            <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">🔄 Generate</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Encryption Methods -->
+    <div id="methods" class="tab-content hidden">
+      <div class="bg-purple-800/20 p-6 rounded-xl border border-purple-500">
+        <h2 class="text-xl font-semibold mb-4">Encryption Methods Overview</h2>
+        <div class="space-y-6">
+          <div class="bg-gray-900 p-4 rounded-lg">
+            <h3 class="text-lg font-bold text-blue-400">🔐 RSA</h3>
+            <p class="text-sm text-gray-300 mt-1">Uses public/private key pairs for secure communication</p>
+            <ul class="list-disc list-inside text-sm mt-2 text-green-400">
+              <li>Public/Private key pair</li>
+              <li>No need to share secrets</li>
+              <li>Secure key exchange</li>
+            </ul>
+          </div>
+          <div class="bg-gray-900 p-4 rounded-lg">
+            <h3 class="text-lg font-bold text-purple-400">🔒 AES</h3>
+            <p class="text-sm text-gray-300 mt-1">Symmetric key encryption for fast data protection</p>
+            <ul class="list-disc list-inside text-sm mt-2 text-yellow-400">
+              <li>Same key for encryption and decryption</li>
+              <li>Very fast and efficient</li>
+              <li>Used in file encryption and secure comms</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Tab switcher
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById(tabId).classList.remove('hidden');
+
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('bg-white', 'text-black');
+        btn.classList.add('bg-gray-800', 'text-white');
+      });
+
+      const activeBtn = Array.from(document.querySelectorAll('.tab-button')).find(btn => btn.textContent.toLowerCase().includes(tabId));
+      if (activeBtn) {
+        activeBtn.classList.add('bg-white', 'text-black');
+      }
+    }
+
+    // Send button
+    document.getElementById('sendButton').addEventListener('click', async () => {
+      const input = document.getElementById('messageInput');
+      const method = document.getElementById('encryptionMethod').value;
+      const chat = document.getElementById('chatContainer');
+      const msg = input.value.trim();
+      if (!msg) return;
+
+      const res = await fetch('http://127.0.0.1:5000/encrypt', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ message: msg, method })
+      });
+
+      const data = await res.json();
+      if (data.encrypted) {
+        const div = document.createElement('div');
+        div.className = 'message mb-2 bg-gray-800 p-3 rounded-md';
+        div.innerHTML = `<div class="text-xs text-gray-400 mb-1">${method.toUpperCase()} · ${new Date().toLocaleTimeString()}</div><div class="text-sm text-green-300">${data.encrypted.substring(0, 80)}...</div>`;
+        chat.appendChild(div);
+        input.value = '';
+      } else {
+        alert('Encryption error: ' + (data.error || 'Unknown'));
+      }
+    });
+  
+    async function generateKeys() {
+      try {
+        const response = await fetch('http://127.0.0.1:5000/generate-keys');
+        const keys = await response.json();
+
+        document.getElementById('rsaPublic').textContent = "Public Key:\n" + keys.rsa.public_key;
+        document.getElementById('rsaPrivate').textContent = "Private Key:\n" + keys.rsa.private_key;
+
+        document.getElementById('aesKey').textContent = "Key:\n" + keys.aes.key;
+
+        document.getElementById('dhPublic').textContent = "Public Key:\n" + keys.dh.public_key;
+        document.getElementById('dhPrivate').textContent = "Private Key:\n" + keys.dh.private_key;
+        document.getElementById('dhShared').textContent = "Shared Secret:\n" + keys.dh.shared_secret;
+      } catch (err) {
+        alert("Failed to generate keys: " + err.message);
+      }
+    }
+  </script>
+
+</body>
+</html>
