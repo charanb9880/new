@@ -7,6 +7,7 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 import os
 import base64
+from flask import send_from_directory
 
 app = Flask(__name__)
 CORS(app)
@@ -101,6 +102,10 @@ def encrypt():
         return jsonify({'encrypted': encrypted})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+        @app.route("/")
+def serve_index():
+return send_from_directory('.', 'echo_shield_modern_full.html')
 
-if __name__ == "__main__":
-    app.run(debug=True)
+if name == "main":
+from waitress import serve
+serve(app, host="0.0.0.0", port=10000)
