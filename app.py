@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from cryptography.hazmat.primitives.asymmetric import rsa, dh, padding
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
@@ -102,10 +102,5 @@ def encrypt():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route("/")
-def serve_index():
-    return send_from_directory('.', 'echo_shield_modern_full.html')
-
 if __name__ == "__main__":
-    from waitress import serve
-    serve(app, host="0.0.0.0", port=5000)
+    app.run(debug=True)
